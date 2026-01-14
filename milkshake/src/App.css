@@ -1,42 +1,59 @@
-#root {
-  max-width: 1280px;
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  font-family: system-ui, -apple-system, BlinkMacOSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e9fd 100%);
+  color: #222;
+  min-height: 100vh;
+}
+
+.app{
+  max-width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem 1rem;
+}
+
+header{
   text-align: center;
+  margin-bottom: 3rem;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+header h1{
+  font-size: 3.2rem;
+  color: #d32f2f;
+  margin-bottom: 0.4rem;
+  font-weight: 800;
+  letter-spacing: -1px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+header p {
+  font-size: 1.3rem;
+  color: #555;
+  font-weight: 400;
+}
+
+.milkshake-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+footer{
+  text-align: center;
+  margin-top: 5rem;
+  padding: 2rem 0;
+  color: #666;
+  font: 0.95rem;
+  border-top: 1px solid #ddd;
+}
+
+@media (max-width: 600px) {
+  .milkshake-grid {
+    grid-template-columns: 1fr;
   }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
