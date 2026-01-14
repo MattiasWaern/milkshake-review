@@ -1,24 +1,58 @@
-import { useState } from 'react'
+import { useState } from 'react';
+import MilkshakeCard from './components/MilkshakeCard';
+import AddMilkshakeForm from './components/AddMilkshakeForm';
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+const [milkshakes, setMilkshakes] = useState([
+    {
+      id: 1,
+      name: "Triple Chokladbomb",
+      place: "Loffes Burger",
+      rating: 8.7,
+      comment: "SÅ jävla chokladig att man blir lite rädd efter halva",
+      imageUrl: "https://images.unsplash.com/photo-1627483262268-9c2b5b2834b5?w=800",
+      date: "2025-12-12"
+    },
+    {
+      id: 2,
+      name: "Oreo Monster",
+      place: "Vårda & Co",
+      rating: 9.1,
+      comment: "Bästa oreo-milken hittills! Lite för mycket glass kanske?",
+      imageUrl: "https://images.unsplash.com/photo-1572449043416-55f4685c9bb7?w=800",
+      date: "2025-11-28"
+    }
+  ]);
+
+  const addMilkshake = (newMilkshake) => {
+    setMilkshakes(prev => [
+      {...newMilkshake, id: Date.now() },
+      ...prev
+    ]);
+  };
 
   return (
-    <>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="app">
+      <header>
+        <h1>Milkshake Reviewers</h1>
+        <p>Vi dricker, Vi bedömer!!, VI SMAKAR!!</p>
+      </header>
+
+      <main>
+        <AddMilkshakeForm onAdd={addMilkshake}/>
+
+        <div className="milkshake-grid">
+          {milkshakes.map(milkshake => (
+           <MilkshakeCard key={milkshake.id} milkshake={milkshake} /> 
+          ))}
+        </div>
+      </main>
+
+      <footer>
+        <p>© {new Date().getFullYear()} — Annika & Mattias • Milkshake Experter</p>
+      </footer>
+    </div>
   )
 }
 
