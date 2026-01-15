@@ -90,7 +90,50 @@ if (isEditing) {
 
   return (
     <article className="milkshake-card">
-     
+      <button
+        className={`favorite-btn ${milkshake.favorite ? 'active' : ''}`}
+        onClick={() => onToggleFavorite(milkshake.id)}
+        title={milkshake.favorite ? 'Ta bort från favoriter' : 'Lägg till favoriter'}
+      >
+        {milkshake.favorite ? '⭐' : '☆'}
+      </button>
+
+        {milkshake.imageUrl && (
+          <div className="card-image">
+            <img src={milkshake.imageUrl} alt={milkshake.name} loading="lazy" />
+          </div>
+        )}
+
+        <div className="card-content">
+        <h3>{milkshake.name}</h3>
+        <div className="place">{milkshake.place}</div>
+
+        <div className="meta-info">
+          <span>Av {milkshake.reviewer || 'Anonym'}</span>
+          <span>{formattedDate}</span>
+        </div>
+
+        <div className="rating">
+          <strong>{milkshake.rating.toFixed(1)}</strong>
+          <span className="stars">{starString}</span>
+          {milkshake.price && (
+            <span className="price">{'€'.repeat(milkshake.price)}</span>
+          )}
+        </div>
+
+        {milkshake.comment && (
+          <p className="comment">"{milkshake.comment}"</p>
+        )}
+
+        <div className="card-actions">
+          <button className="edit-btn" onClick={() => setIsEditing(true)}>
+            ✏️ Redigera
+          </button>
+          <button className="delete-btn" onClick={() => onDelete(milkshake.id)}>
+            🗑️ Ta bort
+          </button>
+        </div>
+      </div>
     </article>
   );
 }
