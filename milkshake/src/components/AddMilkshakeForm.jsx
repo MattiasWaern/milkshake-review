@@ -7,7 +7,9 @@ function AddMilkshakeForm({ onAdd }) {
     rating: '',
     comment: '',
     imageUrl: '',
-    reviewer: ''
+    reviewer: '',
+    price: '',
+    location: {lat: '', lng: '' }
   };
 
   const [form, setForm] = useState(initialForm);
@@ -21,11 +23,17 @@ function AddMilkshakeForm({ onAdd }) {
     e.preventDefault();
     if (!form.name || !form.place) return;
 
-    onAdd({
+    const milkshake = {
       ...form,
-      rating: Number(form.rating)
-    });
+      rating: Number(form.rating),
+      price: form.price ? Number(form.price) : null,
+      location : form.location.lat && form.location.lng ? {
+        lat: Number(form.location.lat),
+        lng: Number(form.location.lng)
+      } : null
+    };
 
+    onAdd(milkshake);
     setForm(initialForm);
   };
 
@@ -62,12 +70,23 @@ function AddMilkshakeForm({ onAdd }) {
           type="number"
           min="0"
           max="10"
-          step="1"
+          step="0.1"
           placeholder="Betyg (0–10)"
           value={form.rating}
           onChange={handleChange}
           required
         />
+
+        <select
+          name="price"
+          value={form.price}
+          onChange={handleChange}
+        >
+        <option value="">Inget Pris</option>
+          <option value="1">$ - Billigt (under 50 kr)</option>
+          <option value="2">$$ - Mellan  (50-80 kr)</option>
+          <option value="3">$$$ - Dyrt (över 80 kr)</option>
+        </select>
 
         <input
           name="imageUrl"
@@ -85,8 +104,30 @@ function AddMilkshakeForm({ onAdd }) {
           onChange={handleChange}
           className="full-width"
         />
-      </div>
 
+      <div className="location-inputs">
+        <h4>📍Plats (valfritt, för karta)</h4>
+        <div className="location-grid">
+          <input
+            name="lat"
+            type="number"
+            step="any"
+            placeholder="Latitude (t.ex 59.6757)"
+            value={form.location.lat}
+            onChange={handleChange}
+          />
+          <input
+            name="lng"
+            type="number"
+            step="any"
+            placeholder="Longitude (t.ex 59.6757)"
+            value={form.location.lng}
+            onChange={handleChange}
+          />
+        </div>
+        <small>Tips: Högerklicka på google maps för att få koordinater</small>
+      </div>
+    </div>
       <button type="submit" onClick={handleSubmit}>Spara recension</button>
     </div>
   );
