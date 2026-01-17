@@ -9,7 +9,7 @@ export default function ReviewCard({ review, onToggleFavorite, onDelete }) {
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'start'}}>
           <div>
             <h3 style={{margin: 0, color: '#9333ea'}}>{review.flavor}</h3>
-            <p style={{margin: '0.2rem 0', color: '#6b7280', fontSize: '0.9rem'}}>{review.place}</p>
+            <p style={{margin: '0.2rem 0', color: '#6b7280', fontSize: '0.9rem'}}>{review.place}  {review.price}kr</p>
           </div>
           <div style={{display: 'flex', gap: '8px'}}>
             <button onClick={() => onToggleFavorite(review.id)} style={{background: 'none', border: 'none', cursor: 'pointer'}}>

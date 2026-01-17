@@ -96,7 +96,7 @@ export default function MilkshakeReviews() {
         onChange={e => setFormData({...formData, location: e.target.value})} 
       />
     </div>
-    
+
     <div style={{ marginBottom: '1.5rem' }}>
       <p style={{ fontSize: '0.85rem', color: 'var(--gray-600)', marginBottom: '8px' }}>Vem recenserar?</p>
       <div style={{ display: 'flex', gap: '10px' }}>
@@ -129,6 +129,12 @@ export default function MilkshakeReviews() {
         type="date"
         value={formData.date} 
         onChange={e => setFormData({...formData, date: e.target.value})} 
+      />
+       <input 
+        placeholder="Pris t.ex 67" 
+        type="number"
+        value={formData.price} 
+        onChange={e => setFormData({...formData, price: e.target.value})} 
       />
     </div>
 
