@@ -1,7 +1,7 @@
 import React from 'react';
-import { Star, Heart, MapPin, Calendar, User, X, Banknote } from 'lucide-react'; // La till Banknote icon
+import { Star, Heart, Pencil, MapPin, Calendar, User, X, Banknote } from 'lucide-react'; // La till Banknote icon
 
-export default function ReviewCard({ review, onToggleFavorite, onDelete }) {
+export default function ReviewCard({ review, onToggleFavorite, onDelete, onEdit }) {
   return (
     <div className="card" style={{background: 'white', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 6px rgba(0,0,0,0.1)'}}>
       {review.image && <img src={review.image} style={{width: '100%', height: '200px', objectFit: 'cover'}} alt="milkshake" />}
@@ -9,9 +9,12 @@ export default function ReviewCard({ review, onToggleFavorite, onDelete }) {
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'start'}}>
           <div>
             <h3 style={{margin: 0, color: '#9333ea'}}>{review.flavor}</h3>
-            <p style={{margin: '0.2rem 0', color: '#6b7280', fontSize: '0.9rem'}}>{review.place}</p>
+            <p style={{margin: '0.2rem 0', color: '#6b7280', fontSize: '1rem', fontWeight: 'bold'}}>{review.place}</p>
           </div>
           <div style={{display: 'flex', gap: '8px'}}>
+            <button onClick={onEdit} style={{background: 'none', border: 'none', cursor: 'pointer'}}>
+              <Pencil size={18} color="#9ca3af"/>
+            </button>
             <button onClick={() => onToggleFavorite(review.id)} style={{background: 'none', border: 'none', cursor: 'pointer'}}>
               <Heart fill={review.favorite ? "#ef4444" : "none"} color={review.favorite ? "#ef4444" : "#9ca3af"} />
             </button>

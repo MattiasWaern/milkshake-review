@@ -8,6 +8,7 @@ export default function MilkshakeReviews() {
   const [reviews, setReviews] = useState([]);
   const [currentView, setCurrentView] = useState('places');
   const [showForm, setShowForm] = useState(false);
+  const [editingId, SetEditingId] = useState(null);
   const [expandedPlace, setExpandedPlace] = useState(null); // Håller koll på vilket ställe som är öppet
   const [formData, setFormData] = useState({
     place: '', location: '', flavor: '', rating: 5, price: '', 
@@ -39,11 +40,24 @@ export default function MilkshakeReviews() {
 
   const handleSave = () => {
     if (!formData.place || !formData.flavor) return alert("Fyll i ställe och smak!");
+
     const newReview = { ...formData, id: Date.now().toString(), favorite: false };
+    const reviewId = editingId || Date.now().toString();
+
+    try {
     localStorage.setItem(`review:${newReview.id}`, JSON.stringify(newReview));
-    setReviews([newReview, ...reviews]);
+
+      if(editingId){
+        setReviews(reviews.map(r => r.id === editingId ? newReview : r));
+      } else {
+        setReviews([newReview, ...reviews]);
+      }
+
     setShowForm(false);
+    SetEditingId(null);
     setFormData({ place: '', location: '', flavor: '', rating: 5, price: '', date: new Date().toISOString().split('T')[0], review: '', reviewer: '' });
+    } catch (e) {console.error(e); }
+
   };
 
   const deleteReview = (id) => {
@@ -62,6 +76,13 @@ export default function MilkshakeReviews() {
     });
     setReviews(updated);
   };
+
+const handleEdit = (review) => {
+  setFormData(review);
+  SetEditingId(review.id);
+  setShowForm(true);
+  window.scrollTo({top: 0, behavior: 'smooth'});
+};
 
   if (currentView === 'stats') return <StatsView reviews={reviews} onBack={() => setCurrentView('places')} />;
 
@@ -167,7 +188,7 @@ export default function MilkshakeReviews() {
     />
     
     <button className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }} onClick={handleSave}>
-      Spara recension
+      {editingId ? 'Spara ändringar': 'Spara recension'}
     </button>
   </div>
 )}
@@ -195,6 +216,7 @@ export default function MilkshakeReviews() {
                       review={r} 
                       onDelete={deleteReview}
                       onToggleFavorite={toggleFavorite}
+                      onEdit={() => handleEdit(r)}
                     />
                   ))}
                 </div>
