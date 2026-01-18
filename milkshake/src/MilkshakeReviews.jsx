@@ -32,10 +32,12 @@ export default function MilkshakeReviews() {
 
   // Gruppera recensioner efter ställe
   const groupedReviews = reviews.reduce((acc, review) => {
-    const key = review.place;
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(review);
+    const normalizedPlace = review.place.trim().charAt(0).toUpperCase() + review.place.trim().slice(1).toLowerCase();
+
+    if(!acc[normalizedPlace]) acc[normalizedPlace] = [];
+    acc[normalizedPlace].push(review);
     return acc;
+
   }, {});
 
   const handleSave = () => {
