@@ -43,10 +43,12 @@ export default function MilkshakeReviews() {
   const handleSave = () => {
     if (!formData.place || !formData.flavor) return alert("Fyll i ställe och smak!");
 
+    const formattedPlace = formData.place.trim().charAt(0).toUpperCase()+formData.place.trim().slice(1).toLowerCase();
+    
     const idToUse = editingId || Date.now().toString();
-
     const reviewData = {
       ...formData,
+      place: formattedPlace,
       id: idToUse
     };
 
