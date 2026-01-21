@@ -37,6 +37,11 @@ body {
   align-items: center;
 }
 
+.header-content h1{
+  font-size: 2rem;
+  font-weight: 800;
+}
+
 .title-gradient {
   background: linear-gradient(to right, var(--primary), var(--secondary));
   -webkit-text-fill-color: transparent;

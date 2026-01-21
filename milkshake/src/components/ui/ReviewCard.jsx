@@ -54,7 +54,7 @@ export default function ReviewCard({ review, onToggleFavorite, onDelete, onEdit 
 
           <Badge>
             <Calendar size={12} style={{marginRight: '4px'}}/> 
-            {new Date(review.date).toLocaleDateString('sv-SE', {day: 'numeric', month: 'short'})}
+            {new Date(review.date).toLocaleDateString('sv-SE', {day: 'numeric', month: 'short', year: 'numeric'})}
           </Badge>
 
           {review.price && (

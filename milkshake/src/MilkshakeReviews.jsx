@@ -101,7 +101,8 @@ const handleEdit = (review) => {
     <div className="main-layout">
       <header className="header">
         <div className="header-content">
-          <h1>🥤 Milkshake Reviews</h1>
+          {/*<h1>🥤</h1>*/}
+          <h1>Milkshake Reviews</h1>
           <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
             {showForm ? <X/> : <Plus/>} {showForm ? 'Stäng' : 'Ny recension'}
           </button>
