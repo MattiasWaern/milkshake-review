@@ -3,6 +3,7 @@ import { Plus, X, Trophy, Download, ChevronRight, ChevronDown, MapPin, Star } fr
 import './styles/App.css';
 import ReviewCard from './components/ui/ReviewCard';
 import StatsView from './components/views/StatsView';
+import Rating from '@mui/material/Rating';
 
 export default function MilkshakeReviews() {
   const [reviews, setReviews] = useState([]);
@@ -155,26 +156,19 @@ const handleEdit = (review) => {
       </div>
     </div>
 
-      <div style={{ marginBottom: '1.5rem', textAlign: 'center', background: '#fdf2f8', padding: '15px', borderRadius: '12px' }}>
-        <p style={{ fontSize: '0.85rem', color: 'var(--gray-600)', marginBottom: '8px', fontWeight: 'bold' }}>Betyg</p>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
-          {[1, 2, 3, 4, 5].map((star) => (
-            <button
-            key={star}
-            type="button"
-            onClick={() => setFormData({...formData, rating: star})}
-            style={{background: 'none', border: 'none', cursor: 'pointer'}}
-            >
-            <Star
-            size={32}
-            fill={star <= formData.rating ? "#fbbf24" : "none"}
-            color={star <= formData.rating ? "#fbbf24" : "#d1d5db"}
-            />
-            </button>
-          ))}
-        </div>
-      </div>
-
+   <div style={{ marginBottom: '1.5rem', textAlign: 'center', background: '#fdf2f8', padding: '15px', borderRadius: '12px' }}>
+  <p style={{ fontSize: '0.85rem', color: 'var(--gray-600)', marginBottom: '8px', fontWeight: 'bold' }}>Betyg</p>
+  
+  <Rating
+    name="milkshake-rating"
+    value={formData.rating}
+    size="large" // Gör stjärnorna lite större och lättare att klicka på
+    onChange={(event, newValue) => {
+      // newValue är siffran 1-5 som användaren klickat på
+      setFormData({...formData, rating: newValue});
+    }}
+  />
+</div>
 
     <div className="input-row">
       <input 
