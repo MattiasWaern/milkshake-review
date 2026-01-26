@@ -120,8 +120,13 @@ const handleEdit = (review) => {
         <div className="stats-grid">
           <div className="stat-box pink">
             <strong>{reviews.length}</strong><br/>Recensioner
-            </div>
-            
+          </div>
+          <div className="stat-box pink">
+            <strong>{reviews.length}</strong><br/>Average Rating {/* FIXA DETTA SENARE ORKAR INTE NU */}
+          </div>
+          <div className="stat-box pink">
+            <strong>{new Set(reviews.map(r => r.place)).size}</strong><br/>Ställen
+          </div>
           <button 
           className="btn btn-outline" 
           onClick={() => setCurrentView('stats')}>
