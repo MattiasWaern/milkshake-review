@@ -22,6 +22,11 @@ export default function MilkshakeMap() {
     useEffect(() => {
         if (mapRef.current) return;
 
+        if(!mapContainer.current) return;
+
+        console.log("Container size:", mapContainer.current.clientWidth, mapContainer.current.clientHeight);
+
+    const id = requestAnimationFrame(() => {
         mapRef.current = new mapboxgl.Map({
             container: mapContainer.current,
             style: "mapbox://styles/mapbox/streets-v12",
@@ -38,11 +43,16 @@ export default function MilkshakeMap() {
                     .setLngLat(place.coords)
                     .setPopup(new mapboxgl.Popup().setText(place.name))
                     .addTo(mapRef.current);
+                });
             });
         });
 
-        return () => mapRef.current?.remove();
+        return () => {
+            mapRef.current?.remove();
+            cancelAnimationFrame(id);
+        }
     }, []);
+
 
     return (
         <div
@@ -51,3 +61,5 @@ export default function MilkshakeMap() {
         />
     );
 }
+
+
