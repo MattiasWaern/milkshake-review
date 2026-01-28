@@ -5,122 +5,89 @@ import { ArrowLeft, Map as MapIcon, Loader2 } from "lucide-react";
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 
-const milkshakePlaces = [
-    { name: "DirtyCoco", coords: [18.0686, 59.3293] }, // lng, lat // inte rätt koordinater för stället xd
-    {name : "Max Norrtäje", coords: [18.6456, 59.4242]},
-];
-
-export default function MilkshakeMap( { onBack, reviews }) {
+export default function MilkshakeMap({ onBack, reviews }) {
     const mapContainer = useRef(null);
     const mapRef = useRef(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/stockholm.json?access_token=${import.meta.env.VITE_MAPBOX_TOKEN}`)
-            .then(res => res.json())
-            .then(data => {
-                console.log("MapBox API data fetched:", data);
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error("API Fel:", err);
-                setLoading(false);
-            })
-    }, []);
+        if (!mapContainer.current) return;
 
-    useEffect(() => {
-        if (mapRef.current || !mapContainer.current) return;
-
-        console.log("Container size:", mapContainer.current.clientWidth, mapContainer.current.clientHeight); // debug
-
-    const id = requestAnimationFrame(() => {
+        // Skapa kartan
         mapRef.current = new mapboxgl.Map({
             container: mapContainer.current,
             style: "mapbox://styles/mapbox/light-v11",
-            center: [18.0686, 59.3293], // lng, lat
-            zoom: 10
+            center: [18.0686, 59.3293], 
+            zoom: 9
         });
+
+        // Funktion för att hämta koordinater och placera ut markörer
+        const addMarkers = async () => {
+            setLoading(true);
+
+            // Gruppera reviews per ställe så vi inte gör onödiga API-anrop
+            const uniquePlaces = [...new Set(reviews.map(r => `${r.place}, ${r.location}`))];
+
+            for (const placeString of uniquePlaces) {
+                try {
+                 
+                    const response = await fetch(
+                        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(placeString)}.json?access_token=${mapboxgl.accessToken}&limit=1`
+                    );
+                    const data = await response.json();
+
+                    if (data.features && data.features.length > 0) {
+                        const coords = data.features[0].center; // [lng, lat]
+                        
+                        // Hitta alla recensioner för just detta ställe för att räkna ut snittbetyg
+                        const placeName = placeString.split(',')[0];
+                        const relevantReviews = reviews.filter(r => r.place === placeName);
+                        const avgRating = Math.round(relevantReviews.reduce((s, r) => s + r.rating, 0) / relevantReviews.length);
+
+                        // Skapa popup
+                        const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
+                            <div style="text-align:center;">
+                                <strong style="color:#9333ea;">${placeName}</strong><br/>
+                                <div style="color:#fbbf24; margin:4px 0;">${"⭐".repeat(avgRating)}</div>
+                                <small>${relevantReviews.length} recensioner</small>
+                            </div>
+                        `);
+
+                        // Lägg till markör
+                        new mapboxgl.Marker({ color: '#9333ea' })
+                            .setLngLat(coords)
+                            .setPopup(popup)
+                            .addTo(mapRef.current);
+                    }
+                } catch (err) {
+                    console.error("Kunde inte hitta platsen:", placeString, err);
+                }
+            }
+            setLoading(false);
+        };
 
         mapRef.current.on("load", () => {
-            mapRef.current.resize(); 
-
-            // lägg markörer här
-            milkshakePlaces.forEach(place => {
-
-            const placeReviews = reviews.filter(r => {
-                r.place.toLowerCase() === place.name.toLowerCase();
-            })
-
-            const averageRating = placeReviews.length > 0 
-            ? Math.round(placeReviews.reduce((sum, r) => sum + r.rating, 0) / placeReviews.length): 5;
-
-            const stars = "⭐".repeat(averageRating);
-
-            const popupContent = `
-                <div style="padding: 5px"; text-align: center;">
-                    <strong style="color: #9333ea;>${place.name}</strong><br/>
-                    <div style="color: #fbbf24; margin: 4px 0;"> ${stars}</div>
-                    <small>${placeReviews.length} recension(er)</small>
-                </div>
-            `
-            
-                new mapboxgl.Marker({color : '#9333ea'})
-                    .setLngLat(place.coords)
-                    .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(popupContent))
-                    .addTo(mapRef.current);
-                });
-            });
+            addMarkers();
         });
 
-        return () => {
-            mapRef.current?.remove();
-            cancelAnimationFrame(id);
-        }
-    }, []);
-
+        return () => mapRef.current?.remove();
+    }, [reviews]); // Kartan ritas om ifall ni lägger till en ny recension
 
     return (
         <div className="container">
-        <button // Hade problem här, glömde lägga till måsvingarna runt onBack
-            onClick={() => {
-                if (typeof onBack === 'function') {
-                onBack();
-                } else {
-                console.error("onBack är inte en funktion! Kolla hur du skickar props.");
-                }
-            }}
-            className="btn btn-outline"
-            >
-            <ArrowLeft size={18} /> Tillbaka
-        </button>
-        
-        <header style={{textAlign: 'center', marginBottom: '1.5rem'}}>
-            <h1 className="title-gradient" style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px'}}>
-                <MapIcon /> Milkshake Karta
-            </h1>
-            <p style={{color: 'gray'}}>Ställen vi testat Milkshakes</p>
-        </header>
+            <button onClick={onBack} className="btn btn-outline" style={{ marginBottom: '1.5rem' }}>
+                <ArrowLeft size={18} /> Tillbaka
+            </button>
 
-         {loading && (
-            <div style={{display: 'flex', justifyContent: 'center', padding: '2rem',}}>
-                <Loader2 className="animate-spin"/> laddar karta...
+            {loading && (
+                <div style={{ position: 'absolute', zIndex: 10, background: 'rgba(255,255,255,0.8)', padding: '10px', borderRadius: '8px', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                    <Loader2 className="animate-spin" /> Letar efter ställen...
+                </div>
+            )}
+
+            <div className="card" style={{ height: "600px", position: 'relative' }}>
+                <div ref={mapContainer} style={{ width: "100%", height: "100%", borderRadius: '16px' }} />
             </div>
-         )}
-
-
-       <div className="card" style={{ padding: '8px', background: 'white', borderRadius: '20px' }}>
-                <div
-                    ref={mapContainer}
-                    style={{ 
-                        width: "100%", 
-                        height: "500px", 
-                        borderRadius: '16px',
-                        overflow: 'hidden'
-                    }}
-                />
-            </div>
-     </div>
+        </div>
     );
 }
-
-
