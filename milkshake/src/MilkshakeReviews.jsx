@@ -99,7 +99,7 @@ const handleEdit = (review) => {
 
   if (currentView === 'stats') return <StatsView reviews={reviews} onBack={() => setCurrentView('places')} />;
 
- if (currentView === 'map') { return <MilkshakeMap onBack={() => setCurrentView('places')} />;}
+ if (currentView === 'map') { return <MilkshakeMap reviews={reviews} onBack={() => setCurrentView('places')} />;}
 
   return (
     <div className="main-layout">

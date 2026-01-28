@@ -10,7 +10,7 @@ const milkshakePlaces = [
     {name : "Max Norrtäje", coords: [18.6456, 59.4242]},
 ];
 
-export default function MilkshakeMap( { onBack }) {
+export default function MilkshakeMap( { onBack, reviews }) {
     const mapContainer = useRef(null);
     const mapRef = useRef(null);
     const [loading, setLoading] = useState(true);
@@ -46,9 +46,27 @@ export default function MilkshakeMap( { onBack }) {
 
             // lägg markörer här
             milkshakePlaces.forEach(place => {
+
+            const placeReviews = reviews.filter(r => {
+                r.place.toLowerCase() === place.name.toLowerCase();
+            })
+
+            const averageRating = placeReviews.length > 0 
+            ? Math.round(placeReviews.reduce((sum, r) => sum + r.rating, 0) / placeReviews.length): 5;
+
+            const stars = "⭐".repeat(averageRating);
+
+            const popupContent = `
+                <div style="padding: 5px"; text-align: center;">
+                    <strong style="color: #9333ea;>${place.name}</strong><br/>
+                    <div style="color: #fbbf24; margin: 4px 0;"> ${stars}</div>
+                    <small>${placeReviews.length} recension(er)</small>
+                </div>
+            `
+            
                 new mapboxgl.Marker({color : '#9333ea'})
                     .setLngLat(place.coords)
-                    .setPopup(new mapboxgl.Popup().setText(place.name))
+                    .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(popupContent))
                     .addTo(mapRef.current);
                 });
             });
