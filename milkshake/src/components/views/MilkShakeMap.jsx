@@ -21,50 +21,73 @@ export default function MilkshakeMap({ onBack, reviews }) {
             zoom: 9
         });
 
-        // Funktion för att hämta koordinater och placera ut markörer
-        const addMarkers = async () => {
-            setLoading(true);
+    // Funktion för att hämta koordinater och placera ut markörer
+    const addMarkers = async () => {
+    setLoading(true);
 
-            // Gruppera reviews per ställe så vi inte gör onödiga API-anrop
-            const uniquePlaces = [...new Set(reviews.map(r => `${r.place}, ${r.location}`))];
-
-            for (const placeString of uniquePlaces) {
-                try {
-                 
-                    const response = await fetch(
-                        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(placeString)}.json?access_token=${mapboxgl.accessToken}&limit=1`
-                    );
-                    const data = await response.json();
-
-                    if (data.features && data.features.length > 0) {
-                        const coords = data.features[0].center; // [lng, lat]
-                        
-                        // Hitta alla recensioner för just detta ställe för att räkna ut snittbetyg
-                        const placeName = placeString.split(',')[0];
-                        const relevantReviews = reviews.filter(r => r.place === placeName);
-                        const avgRating = Math.round(relevantReviews.reduce((s, r) => s + r.rating, 0) / relevantReviews.length);
-
-                        // Skapa popup
-                        const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
-                            <div style="text-align:center;">
-                                <strong style="color:#9333ea;">${placeName}</strong><br/>
-                                <div style="color:#fbbf24; margin:4px 0;">${"⭐".repeat(avgRating)}</div>
-                                <small>${relevantReviews.length} recensioner</small>
-                            </div>
-                        `);
-
-                        // Lägg till markör
-                        new mapboxgl.Marker({ color: '#9333ea' })
-                            .setLngLat(coords)
-                            .setPopup(popup)
-                            .addTo(mapRef.current);
+    const uniquePlaces = [...new Set(reviews.map(r => `${r.place}, ${r.location}`))];
+    
+    for (const placeString of uniquePlaces) {
+        try {
+            // Normalisera sökningen
+            const normalized = placeString
+                .trim()
+                .toLowerCase()
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+            
+            const searchQuery = `${normalized}, Sweden`;
+            
+            console.log("Original:", placeString);
+            console.log("Normaliserad:", normalized);
+            
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchQuery)}&format=json&limit=1&countrycodes=se`,
+                {
+                    headers: {
+                        'User-Agent': 'MilkshakeApp/1.0' // Viktigt att inkludera en User-Agent för Nominatim
                     }
-                } catch (err) {
-                    console.error("Kunde inte hitta platsen:", placeString, err);
                 }
+            );
+            
+            const data = await response.json();
+            console.log("Nominatim svar:", data);
+
+            if (data && data.length > 0) {
+                const coords = [parseFloat(data[0].lon), parseFloat(data[0].lat)];
+                
+                console.log(`Placerar ${placeString} på:`, coords);
+                console.log(`Platsbeskrivning: ${data[0].display_name}`);
+
+                const placeName = placeString.split(',')[0].trim();
+                const relevantReviews = reviews.filter(r => r.place.trim() === placeName);
+                const avgRating = Math.round(relevantReviews.reduce((s, r) => s + r.rating, 0) / relevantReviews.length);
+
+                const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
+                    <div style="text-align:center;">
+                        <strong style="color:#9333ea;">${placeName}</strong><br/>
+                        <div style="color:#fbbf24; margin:4px 0;">${"⭐".repeat(avgRating)}</div>
+                        <small>${relevantReviews.length} recensioner</small>
+                    </div>
+                `);
+
+                new mapboxgl.Marker({ color: '#9333ea' })
+                    .setLngLat(coords)
+                    .setPopup(popup)
+                    .addTo(mapRef.current);
+            } else {
+                console.warn(`Ingen plats hittades för: ${searchQuery}`);
             }
-            setLoading(false);
-        };
+        } catch (err) {
+            console.error("Kunde inte hitta platsen:", placeString, err);
+        }
+        
+        // Viktigt: Max 1 request per sekund för Nominatim
+        await new Promise(resolve => setTimeout(resolve, 1100));
+    }
+    setLoading(false);
+};
 
         mapRef.current.on("load", () => {
             addMarkers();
