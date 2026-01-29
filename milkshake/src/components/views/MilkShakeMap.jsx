@@ -181,13 +181,19 @@ export default function MilkshakeMap({ onBack, reviews }) {
                             minWidth: '300px'
                         }}>
                             <Loader2 
-                                className="animate-spin" 
                                 size={48} 
                                 style={{ 
                                 color: '#9333ea',
-                                margin: '0 auto 1rem'
+                                margin: '0 auto 1rem',
+                                animation: '1s linear infinite spin'
                                 }} 
                             />
+                            <style>
+                                {`@keyframes spin {
+                                    0% { transform: rotate(0deg); }
+                                    100% { transform: rotate(360deg); }
+                                }`}
+                            </style>
                             <p style={{
                                 margin: '0 0 1rem',
                                 fontSize: '18px',
