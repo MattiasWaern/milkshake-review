@@ -87,6 +87,8 @@ export default function MilkshakeMap({ onBack, reviews }) {
                 const avgRating = Math.round(relevantReviews.reduce((s, r) => s + r.rating, 0) / relevantReviews.length);
                 const reviewerNames = [...new Set(relevantReviews.map(r => r.reviewer).filter(name => name && name.trim() !== ''))];
 
+
+                // Popup styling, det man ser när man klickar på en markör
                 const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
                     <div style="text-align:center;">
                         <strong style="color:#9333ea;">${placeName}</strong><br/>
@@ -109,7 +111,7 @@ export default function MilkshakeMap({ onBack, reviews }) {
         
         setLoadingProgress(Math.round(((i + 1) / uniquePlaces.length) * 100))
 
-        // Viktigt: Max 1 request per sekund för Nominatim
+        
         await new Promise(resolve => setTimeout(resolve, 100));
     }
     setLoading(false);
@@ -120,7 +122,7 @@ export default function MilkshakeMap({ onBack, reviews }) {
         });
 
         return () => mapRef.current?.remove();
-    }, [reviews]); // Kartan ritas om ifall ni lägger till en ny recension
+    }, [reviews]); // Kartan ritas om ifall man lägger till en ny recension
 
     return (
         <div style={{
