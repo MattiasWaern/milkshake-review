@@ -56,8 +56,25 @@ export default function MilkshakeMap({ onBack, reviews }) {
                 }
             );
             
-            const data = await response.json();
+            let data = await response.json();
             console.log("Nominatim svar:", data);
+
+            if(!data || data.length === 0){
+                const locationOnly = placeString.split(',')[1]?.trim();
+                if(locationOnly){
+                    console.log(`Försöker igen med endast plats: ${locationOnly}`);
+                    const response = await fetch(
+                        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(locationOnly + ', Sweden')}&format=json&limit=1&countrycodes=se`,
+                        {
+                            headers: {
+                                'User-Agent': 'MilkshakeApp/1.0'
+                            }
+                        }
+                    );
+                    data = await response.json();
+                    console.log("Nominatim svar vid omförsök:", data);
+                }
+            }
 
             if (data && data.length > 0) {
                 const coords = [parseFloat(data[0].lon), parseFloat(data[0].lat)];
@@ -74,7 +91,7 @@ export default function MilkshakeMap({ onBack, reviews }) {
                     <div style="text-align:center;">
                         <strong style="color:#9333ea;">${placeName}</strong><br/>
                         <div style="color:#fbbf24; margin:4px 0;">${"⭐".repeat(avgRating)}</div>
-                        <small>${relevantReviews.length} recension(er)</small>
+                        <small>${relevantReviews.length} Recension(er)</small>
                         <small>${reviewerNames}</small> 
                     </div>
                 `);
