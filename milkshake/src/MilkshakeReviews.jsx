@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, X, Trophy, Download, ChevronRight, ChevronDown, MapPin, Star } from 'lucide-react';
+import { HashRouter, Routes, Route, Link } from 'react-router-dom';
 import './styles/App.css';
 import ReviewCard from './components/ui/ReviewCard';
 import StatsView from './components/views/StatsView';
 import MilkshakeMap  from './components/views/MilkShakeMap';
 import Rating from '@mui/material/Rating';
-import {Routes, Route, Link} from 'react-router-dom';
 
 export default function MilkshakeReviews() {
   const [reviews, setReviews] = useState([]);
@@ -98,11 +98,8 @@ const handleEdit = (review) => {
   window.scrollTo({top: 0, behavior: 'smooth'});
 };
 
-  if (currentView === 'stats') return <StatsView reviews={reviews} onBack={() => setCurrentView('places')} />;
-
- if (currentView === 'map') { return <MilkshakeMap reviews={reviews} onBack={() => setCurrentView('places')} />;}
-
   return (
+  <HashRouter>
     <div className="main-layout">
       <header className="header">
         <div className="header-content">
@@ -258,5 +255,6 @@ const handleEdit = (review) => {
         <Route path="/map" element={<MilkshakeMap reviews={reviews} onBack={() => window.history.back()} />} />
       </Routes>
     </div>
+  </HashRouter>
   );
 }
