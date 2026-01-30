@@ -5,6 +5,7 @@ import ReviewCard from './components/ui/ReviewCard';
 import StatsView from './components/views/StatsView';
 import MilkshakeMap  from './components/views/MilkShakeMap';
 import Rating from '@mui/material/Rating';
+import {Routes, Route, Link} from 'react-router-dom';
 
 export default function MilkshakeReviews() {
   const [reviews, setReviews] = useState([]);
@@ -105,157 +106,157 @@ const handleEdit = (review) => {
     <div className="main-layout">
       <header className="header">
         <div className="header-content">
-          <div className='header-titles'>
-          {/*<h1>🥤</h1>*/}
-          <h1>Milkshake</h1>
-          <h1>Reviews</h1>
-          </div>
+          {/* Klicka på titeln för att gå hem */}
+          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div className='header-titles'>
+              <h1>Milkshake</h1>
+              <h1>Reviews</h1>
+            </div>
+          </Link>
           <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
             {showForm ? <X/> : <Plus/>} {showForm ? 'Stäng' : 'Ny recension'}
           </button>
         </div>
       </header>
 
-      <main className="container">
-        <div className="stats-grid">
-          <div className="stat-box pink">
-            <strong>{reviews.length}</strong><br/>Recensioner
-          </div>
-          <div className="stat-box pink">
-            <strong>{reviews.length}</strong><br/>Average Rating {/* FIXA DETTA SENARE ORKAR INTE NU */}
-          </div>
-          <div className="stat-box pink">
-            <strong>{new Set(reviews.map(r => r.place)).size}</strong><br/>Ställen
-          </div>
-          <button 
-          className="btn btn-outline" 
-          onClick={() => setCurrentView('stats')}>
-          <Trophy size={16}/> Stats
-          </button>
+      <Routes>
+        {/* --- STARTSIDAN (Listan och Formuläret) --- */}
+        <Route path="/" element={
+          <main className="container">
+            <div className="stats-grid">
+              <div className="stat-box pink">
+                <strong>{reviews.length}</strong><br/>Recensioner
+              </div>
+              <div className="stat-box pink">
+                <strong>{reviews.length > 0 ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1) : 0}</strong><br/>Snittbetyg
+              </div>
+              <div className="stat-box pink">
+                <strong>{new Set(reviews.map(r => r.place)).size}</strong><br/>Ställen
+              </div>
+              
+              {/* Navigationslänkar */}
+              <Link to="/stats" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }}>
+                <Trophy size={16} style={{ marginRight: '8px' }}/> Stats
+              </Link>
 
-          <button 
-          className="btn btn-outline"
-          onClick={()=> setCurrentView('map')}
-          >
-          <MapPin size={16}/> Karta
-          </button>
-        </div>
-
-        {showForm && (
-  <div className="form-card">
-    <div className="input-row">
-      <input 
-        placeholder="Ställe (t.ex. Max)" 
-        value={formData.place} 
-        onChange={e => setFormData({...formData, place: e.target.value})} 
-      />
-      <input 
-        placeholder="Plats (t.ex. Norrtälje)" 
-        value={formData.location} 
-        onChange={e => setFormData({...formData, location: e.target.value})} 
-      />
-    </div>
-
-    <div style={{ marginBottom: '1.5rem' }}>
-      <p style={{ fontSize: '0.85rem', color: 'var(--gray-600)', marginBottom: '8px' }}>Vem recenserar?</p>
-      <div style={{ display: 'flex', gap: '10px' }}>
-        {["Annika", "Mattias"].map(name => (
-          <button
-            key={name}
-            type="button"
-            onClick={() => setFormData({...formData, reviewer: name})}
-            className={`btn ${formData.reviewer === name ? 'btn-primary' : 'btn-outline'}`}
-            style={{ 
-              flex: 1, 
-              justifyContent: 'center', 
-              padding: '10px',
-              border: formData.reviewer === name ? 'none' : '1px solid var(--gray-200)' 
-            }}
-          >
-            {name}
-          </button>
-        ))}
-      </div>
-    </div>
-
-   <div style={{ marginBottom: '1.5rem', textAlign: 'center', background: '#fdf2f8', padding: '15px', borderRadius: '12px' }}>
-  <p style={{ fontSize: '0.85rem', color: 'var(--gray-600)', marginBottom: '8px', fontWeight: 'bold' }}>Betyg</p>
-  
-  <Rating
-    name="milkshake-rating"
-    value={formData.rating}
-    size="large" // Gör stjärnorna lite större och lättare att klicka på
-    onChange={(event, newValue) => {
-      // newValue är siffran 1-5 som användaren klickat på
-      setFormData({...formData, rating: newValue});
-    }}
-  />
-</div>
-
-    <div className="input-row">
-      <input 
-        placeholder="Smak" 
-        value={formData.flavor} 
-        onChange={e => setFormData({...formData, flavor: e.target.value})} 
-      />
-      <input 
-        type="date"
-        value={formData.date} 
-        onChange={e => setFormData({...formData, date: e.target.value})} 
-      />
-       <input 
-        type="number"
-        placeholder="Pris (kr)" 
-        value={formData.price} 
-        onChange={e => setFormData({...formData, price: e.target.value})} 
-      />
-    </div>
-
-    <textarea 
-      placeholder="Hur smakade den? Recensionen" 
-      rows="3" 
-      value={formData.review} 
-      onChange={e => setFormData({...formData, review: e.target.value})} 
-    />
-    
-    <button className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }} onClick={handleSave}>
-      {editingId ? 'Spara ändringar': 'Spara recension'}
-    </button>
-  </div>
-)}
-
-        {/* Grupperad lista */} 
-        <div className="places-list" style={{ marginTop: '2rem' }}>
-          {Object.keys(groupedReviews).map(placeName => (
-            <div key={placeName} className="place-group" style={{ marginBottom: '1rem' }}>
-              <button 
-                onClick={() => setExpandedPlace(expandedPlace === placeName ? null : placeName)}
-                className="place-header-btn"
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  {expandedPlace === placeName ? <ChevronDown /> : <ChevronRight />}
-                  <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{placeName}</span>
-                  <span className="count-badge">{groupedReviews[placeName].length}</span>
-                </div>
-              </button>
-
-              {expandedPlace === placeName && (
-                <div className="review-grid" style={{ padding: '1rem 0' }}>
-                  {groupedReviews[placeName].map(r => (
-                    <ReviewCard 
-                      key={r.id} 
-                      review={r} 
-                      onDelete={deleteReview}
-                      onToggleFavorite={toggleFavorite}
-                      onEdit={() => handleEdit(r)}
-                    />
-                  ))}
-                </div>
-              )}
+              <Link to="/map" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }}>
+                <MapPin size={16} style={{ marginRight: '8px' }}/> Karta
+              </Link>
             </div>
-          ))}
-        </div>
-      </main>
+
+            {showForm && (
+              <div className="form-card">
+                <div className="input-row">
+                  <input 
+                    placeholder="Ställe (t.ex. Max)" 
+                    value={formData.place} 
+                    onChange={e => setFormData({...formData, place: e.target.value})} 
+                  />
+                  <input 
+                    placeholder="Plats (t.ex. Norrtälje)" 
+                    value={formData.location} 
+                    onChange={e => setFormData({...formData, location: e.target.value})} 
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--gray-600)', marginBottom: '8px' }}>Vem recenserar?</p>
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    {["Annika", "Mattias"].map(name => (
+                      <button
+                        key={name}
+                        type="button"
+                        onClick={() => setFormData({...formData, reviewer: name})}
+                        className={`btn ${formData.reviewer === name ? 'btn-primary' : 'btn-outline'}`}
+                        style={{ flex: 1, justifyContent: 'center' }}
+                      >
+                        {name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: '1.5rem', textAlign: 'center', background: '#fdf2f8', padding: '15px', borderRadius: '12px' }}>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--gray-600)', marginBottom: '8px', fontWeight: 'bold' }}>Betyg</p>
+                  <Rating
+                    name="milkshake-rating"
+                    value={formData.rating}
+                    size="large"
+                    onChange={(event, newValue) => setFormData({...formData, rating: newValue})}
+                  />
+                </div>
+
+                <div className="input-row">
+                  <input 
+                    placeholder="Smak" 
+                    value={formData.flavor} 
+                    onChange={e => setFormData({...formData, flavor: e.target.value})} 
+                  />
+                  <input 
+                    type="date"
+                    value={formData.date} 
+                    onChange={e => setFormData({...formData, date: e.target.value})} 
+                  />
+                  <input 
+                    type="number"
+                    placeholder="Pris (kr)" 
+                    value={formData.price} 
+                    onChange={e => setFormData({...formData, price: e.target.value})} 
+                  />
+                </div>
+
+                <textarea 
+                  placeholder="Hur smakade den?" 
+                  rows="3" 
+                  value={formData.review} 
+                  onChange={e => setFormData({...formData, review: e.target.value})} 
+                />
+                
+                <button className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }} onClick={handleSave}>
+                  {editingId ? 'Spara ändringar': 'Spara recension'}
+                </button>
+              </div>
+            )}
+
+            <div className="places-list" style={{ marginTop: '2rem' }}>
+              {Object.keys(groupedReviews).map(placeName => (
+                <div key={placeName} className="place-group" style={{ marginBottom: '1rem' }}>
+                  <button 
+                    onClick={() => setExpandedPlace(expandedPlace === placeName ? null : placeName)}
+                    className="place-header-btn"
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      {expandedPlace === placeName ? <ChevronDown /> : <ChevronRight />}
+                      <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{placeName}</span>
+                      <span className="count-badge">{groupedReviews[placeName].length}</span>
+                    </div>
+                  </button>
+
+                  {expandedPlace === placeName && (
+                    <div className="review-grid" style={{ padding: '1rem 0' }}>
+                      {groupedReviews[placeName].map(r => (
+                        <ReviewCard 
+                          key={r.id} 
+                          review={r} 
+                          onDelete={deleteReview}
+                          onToggleFavorite={toggleFavorite}
+                          onEdit={() => handleEdit(r)}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </main>
+        } />
+
+        
+        <Route path="/stats" element={<StatsView reviews={reviews} onBack={() => window.history.back()} />} />
+
+        
+        <Route path="/map" element={<MilkshakeMap reviews={reviews} onBack={() => window.history.back()} />} />
+      </Routes>
     </div>
   );
 }
