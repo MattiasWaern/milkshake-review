@@ -117,7 +117,7 @@ const handleEdit = (review) => {
       </header>
 
       <Routes>
-        {/* --- STARTSIDAN (Listan och Formuläret) --- */}
+        {/* --- STARTSIDAN --- */}
         <Route path="/" element={
           <main className="container">
             <div className="stats-grid">
