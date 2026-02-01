@@ -1,6 +1,6 @@
 # 🥤 Milkshake Reviews
 
-Ett personligt och lekfullt React-projekt för att recensera milkshakes 🍓🥛
+Ett personligt och ett skolprojekt där jag skapade mitt första React-projekt, där projektet handlar om att kunna recensera milkshakes 🍓🥛
 
 Appen låter dig spara, betygsätta och jämföra milkshakes från olika ställen, se statistik över dina recensioner och visualisera alla platser på en interaktiv karta.
 
