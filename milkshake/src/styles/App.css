@@ -286,6 +286,7 @@ input, select, textarea {
   .btn {
     padding: 1rem 1.25rem;
     font-size: 1rem;
+    margin-top: 10px;
   }
 }
 

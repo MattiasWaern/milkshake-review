@@ -3,8 +3,8 @@ import { Plus, X, Trophy, Download, ChevronRight, ChevronDown, MapPin, Star } fr
 import { HashRouter, Routes, Route, Link } from 'react-router-dom';
 import './styles/App.css';
 import ReviewCard from './components/ui/ReviewCard';
-import StatsView from './components/views/StatsView';
-import MilkshakeMap  from './components/views/MilkShakeMap';
+import StatsView from './components/pages/StatsView';
+import MilkshakeMap  from './components/pages/MilkShakeMap';
 import Rating from '@mui/material/Rating';
 
 
