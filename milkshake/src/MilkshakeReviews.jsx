@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, X, Trophy, Download, ChevronRight, ChevronDown, MapPin, Star } from 'lucide-react';
-import { HashRouter, Routes, Route, Link } from 'react-router-dom';
+import { HashRouter, Routes, Route, Link, useParams } from 'react-router-dom';
 import './styles/App.css';
 import ReviewCard from './components/ui/ReviewCard';
 import StatsView from './components/pages/StatsView';
@@ -254,11 +254,46 @@ const handleEdit = (review) => {
 
         
         <Route path="/stats" element={<StatsView reviews={reviews} onBack={() => window.history.back()} />} />
-
-        
         <Route path="/map" element={<MilkshakeMap reviews={reviews} onBack={() => window.history.back()} />} />
+
+
+
       </Routes>
     </div>
     </HashRouter>
   );
+}
+
+function ReviewDetail({reviews}) {
+  const { id} = useParams();
+  const review = reviews.find(r => r.id === id);
+
+  if(!review){
+    return(
+      <div className="container" style={{textAlign: 'center', marginTop: '5rem'}}>
+        <h2>Hoppsan</h2>
+        <p>Vi hittade ingen recension med ID:t.</p>
+        <link to="/" className="btn btn-primary">Tillbaka till startsidan</link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container" style={{padding: '2rem 1rem'}}>
+      <Link to="/" className="btn btn-outline" style={{marginBottom: '2rem', display: 'inline-flex', alignItems: 'center', gap: '8px'}}>
+        Tillbaka till listan
+      </Link>
+
+      <div style={{maxWidth: '600px', margin: '0 auto'}}>
+        <ReviewCard
+          review={review}
+          onDelete={() => {}} // Tomma funktioner här eftersom vi bara visar detaljer
+          onToggleFavorite={() => {}} // Tomma funktioner här eftersom vi bara visar detaljer
+          onEdit={() => {}} // Tomma funktioner här eftersom vi bara visar detaljer
+        />
+      </div>
+
+      
+    </div>
+  )
 }
