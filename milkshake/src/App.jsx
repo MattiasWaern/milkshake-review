@@ -7,6 +7,8 @@ import StatsView from './components/pages/StatsView';
 import MilkshakeMap  from './components/pages/MilkShakeMap';
 import Rating from '@mui/material/Rating';
 import ReviewDetail from './components/ui/ReviewDetail';
+import {db} from './firebase';
+import {collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc} from 'firebase/firestore';
 
 
 export default function App() {
@@ -20,20 +22,24 @@ export default function App() {
     date: new Date().toISOString().split('T')[0], review: '', reviewer: ''
   });
 
-  useEffect(() => { loadReviews(); }, []);
+useEffect(() => {
+    const reviewsCollection = collection(db, "reviews");
 
-  const loadReviews = () => {
-    try {
-      const savedReviews = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith('review:')) {
-          savedReviews.push(JSON.parse(localStorage.getItem(key)));
-        }
-      }
-      setReviews(savedReviews.sort((a, b) => new Date(b.date) - new Date(a.date)));
-    } catch (e) { console.error(e); }
-  };
+    const unsubscribe = onSnapshot(reviewsCollection, (snapshot) => {
+      const firebaseReviews = snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id 
+      }));
+
+      const sortedReviews = firebaseReviews.sort((a, b) => new Date(b.date) - new Date(a.date));
+      setReviews(sortedReviews);
+    }, (error) => {
+      console.error("Error fetching reviews: ", error);
+    });
+
+    // Cleanup: Stäng av lyssnaren när komponenten tas bort
+    return () => unsubscribe();
+  }, []);
 
   // Gruppera recensioner efter ställe
   const groupedReviews = reviews.reduce((acc, review) => {
@@ -46,51 +52,53 @@ export default function App() {
     return acc;
   }, {});
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formData.place || !formData.flavor || !formData.location) return alert("Fyll i ställe, smak & plats!");
 
-    const formattedPlace = formData.place.trim().charAt(0).toUpperCase()+formData.place.trim().slice(1).toLowerCase();
-    const formattedLocation = formData.location.trim().charAt(0).toUpperCase()+formData.location.trim().slice(1).toLowerCase();
+    const formattedPlace = formData.place.trim().charAt(0).toUpperCase() + formData.place.trim().slice(1).toLowerCase();
+    const formattedLocation = formData.location.trim().charAt(0).toUpperCase() + formData.location.trim().slice(1).toLowerCase();
     
-    const idToUse = editingId || Date.now().toString();
     const reviewData = {
       ...formData,
       place: formattedPlace,
       location: formattedLocation,
-      id: idToUse
     };
 
     try {
-    localStorage.setItem(`review:${idToUse}`, JSON.stringify(reviewData));
-
-      if(editingId){
-        setReviews(reviews.map(r => r.id === editingId ? reviewData : r));
+      if (editingId) {
+        const reviewRef = doc(db, "reviews", editingId);
+        await updateDoc(reviewRef, reviewData);
+        console.log("Recension uppdaterad!");
       } else {
-        setReviews([reviewData, ...reviews]);
+        await addDoc(collection(db, "reviews"), reviewData);
+        console.log("Ny recension sparad!");
       }
 
-    setShowForm(false);
-    SetEditingId(null);
-    setFormData({ place: '', location: '', flavor: '', rating: 5, price: '', date: new Date().toISOString().split('T')[0], review: '', reviewer: '' });
-    } catch (e) {console.error(e); }
-
+      setShowForm(false);
+      SetEditingId(null);
+      setFormData({ place: '', location: '', flavor: '', rating: 5, price: '', date: new Date().toISOString().split('T')[0], review: '', reviewer: '' });
+    } catch (e) {
+      console.error("Error saving: ", e);
+    }
   };
 
-  const deleteReview = (id) => {
-    localStorage.removeItem(`review:${id}`);
-    setReviews(reviews.filter(x => x.id !== id));
+  const deleteReview = async  (id) => {
+    try {
+      await deleteDoc(doc(db, "reviews", id));
+    } catch (e) {
+      console.error("Error deleting review: ", e);
+    }
   };
 
-  const toggleFavorite = (id) => {
-    const updated = reviews.map(r => {
-      if (r.id === id) {
-        const newR = { ...r, favorite: !r.favorite };
-        localStorage.setItem(`review:${id}`, JSON.stringify(newR));
-        return newR;
-      }
-      return r;
-    });
-    setReviews(updated);
+  const toggleFavorite = async (id) => {
+    const reviewToUpdate = reviews.find(r => r.id === id);
+    if (!reviewToUpdate) return;
+    try {
+      const reviewRef = doc(db, "reviews", id);
+      await updateDoc(reviewRef, { favorite: !reviewToUpdate.favorite });
+    } catch (e) {
+      console.error("Error toggling favorite: ", e);
+    }
   };
 
 const handleEdit = (review) => {
