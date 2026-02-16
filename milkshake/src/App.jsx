@@ -7,6 +7,8 @@ import StatsView from './components/pages/StatsView';
 import MilkshakeMap  from './components/pages/MilkShakeMap';
 import Rating from '@mui/material/Rating';
 import ReviewDetail from './components/ui/ReviewDetail';
+import {db} from './firebase';
+import {collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc} from 'firebase/firestore';
 
 
 export default function App() {
@@ -20,20 +22,24 @@ export default function App() {
     date: new Date().toISOString().split('T')[0], review: '', reviewer: ''
   });
 
-  useEffect(() => { loadReviews(); }, []);
+ useEffect(() => {
+  const reviewsCollection = collection(db, "reviews");
 
-  const loadReviews = () => {
-    try {
-      const savedReviews = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith('review:')) {
-          savedReviews.push(JSON.parse(localStorage.getItem(key)));
-        }
-      }
-      setReviews(savedReviews.sort((a, b) => new Date(b.date) - new Date(a.date)));
-    } catch (e) { console.error(e); }
-  };
+  const unsubscribe = onSnapshot(reviewsCollection, (snapshot) => {
+    const firebaseReviews = snapshot.docs.map(doc => ({
+      ...doc.data(),
+      id: doc.id 
+    }));
+
+    const sortedReviews = firebaseReviews.sort((a, b) => new Date(b.date) - new Date(a.date));
+    setReviews(sortedReviews);
+  }, (error) => {
+    console.error("Error fetching reviews: ", error);
+  });
+  
+  return () => unsubscribe();
+
+ }, []);
 
   // Gruppera recensioner efter ställe
   const groupedReviews = reviews.reduce((acc, review) => {
@@ -46,7 +52,7 @@ export default function App() {
     return acc;
   }, {});
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formData.place || !formData.flavor || !formData.location) return alert("Fyll i ställe, smak & plats!");
 
     const formattedPlace = formData.place.trim().charAt(0).toUpperCase()+formData.place.trim().slice(1).toLowerCase();
@@ -61,7 +67,7 @@ export default function App() {
     };
 
     try {
-    localStorage.setItem(`review:${idToUse}`, JSON.stringify(reviewData));
+    await addDoc(collection(db, "reviews"), reviewData);
 
       if(editingId){
         setReviews(reviews.map(r => r.id === editingId ? reviewData : r));
