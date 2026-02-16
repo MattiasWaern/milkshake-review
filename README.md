@@ -15,7 +15,7 @@ Appen låter dig spara, betygsätta och jämföra milkshakes från olika ställe
 * 🏆 Automatiska badges (t.ex. *Banger Shake* vid 5⭐)
 * 📊 Statistikvy med snittbetyg, antal ställen m.m.
 * 🗺️ Interaktiv karta med Mapbox + OpenStreetMap (Nominatim)
-* 💾 All data sparas lokalt i `localStorage`
+* 💾 All data sparas i `firebase`
 * 🧭 Navigering med `react-router-dom`
 * 🎨 CSS med variabler för färgtema och konsekvent design
 
@@ -27,7 +27,7 @@ Appen låter dig spara, betygsätta och jämföra milkshakes från olika ställe
 * ✅ Använder `react-router-dom` för routing mellan vyer
 * ✅ Dynamisk routing, använder :id och useParams för specifika recensionssidor
 * ✅ State-hantering med React hooks (`useState`, `useEffect`)
-* ✅ Data sparas lokalt med `localStorage`, kommer koppla upp datan till en databas i framtiden.
+* ✅ Data sparas med `firebase`.
 * ✅ Interaktion med externt API (Mapbox + OpenStreetMap Nominatim)
 * ✅ Dynamisk rendering av listor och vyer
 * ✅ Tydlig komponentstruktur (`components/ui`, `components/pages`)
@@ -59,7 +59,7 @@ Data och callbacks skickas ner via props från föräldrakomponenter till barnko
 
 ### 🧠 State-lösning
 
-State hanteras lokalt med React hooks (`useState`, `useEffect`). Alla recensioner lagras i `localStorage`, vilket gör att applikationen inte är beroende av en backend men ändå kan behålla data mellan omladdningar. Vid ändringar synkas state och `localStorage` för att hålla datan konsekvent.
+State hanteras lokalt med React hooks (`useState`, `useEffect`). Alla recensioner lagras i `firebase`, vilket gör att applikationen inte är beroende av en backend men ändå kan behålla data mellan omladdningar. Vid ändringar synkas state och `firebase` för att hålla datan konsekvent.
 
 ### 🛠️ Problemlösning: React 19 & Hooks
 Under projektets gång stötte jag på utmaningar med versionskonflikter mellan React 19 och react-router-dom, vilket resulterade i felet "Invalid hook call". Jag löste detta genom en grundlig omstrukturering av package.json där jag använde overrides för att tvinga projektet att använda en enhetlig React-instans, samt flyttade routerns placering för att garantera att kontexten fanns tillgänglig för alla hooks.
