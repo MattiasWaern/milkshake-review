@@ -274,6 +274,7 @@ input, select, textarea {
   .form-card {
     padding: 1.5rem 1rem;
     border-radius: 12px;
+    margin-top: 10px;
   }
   
   .input-row {
