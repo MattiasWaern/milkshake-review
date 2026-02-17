@@ -194,7 +194,7 @@ const handleEdit = (review) => {
               border: '1px solid #fbcfe8'
             }}>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-dark)', marginBottom: '15px', fontWeight: 'bold' }}>
-                DRAG FÖR ATT SÄTTA BETYG
+                DRAG FÖR ATT SÄTTA BETYG :D
               </p>
 
 
