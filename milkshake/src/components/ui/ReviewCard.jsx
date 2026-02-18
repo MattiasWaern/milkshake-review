@@ -77,7 +77,7 @@ export default function ReviewCard({ review, onToggleFavorite, onDelete, onEdit 
           <div style={{ display: 'flex', gap: '4px' }}>
             {[
               {
-                icon: <Pencil size={15} />,
+                icon: <Pencil size={20} />,
                 onClick: onEdit,
                 title: 'Redigera',
                 color: '#c490aa',
@@ -85,7 +85,7 @@ export default function ReviewCard({ review, onToggleFavorite, onDelete, onEdit 
               },
               {
                 icon: <Heart
-                  size={15}
+                  size={20}
                   fill={review.favorite ? '#ff4da6' : 'none'}
                   color={review.favorite ? '#ff4da6' : '#c490aa'}
                 />,
@@ -95,7 +95,7 @@ export default function ReviewCard({ review, onToggleFavorite, onDelete, onEdit 
                 hoverBg: '#fff0f6',
               },
               {
-                icon: <X size={15} />,
+                icon: <X size={20} />,
                 onClick: () => onDelete(review.id),
                 title: 'Ta bort',
                 color: '#c490aa',
@@ -148,7 +148,7 @@ export default function ReviewCard({ review, onToggleFavorite, onDelete, onEdit 
                 />
           </div>
 
-          {review.rating === 5 && (
+          {review.rating >= 4.5 && (
             <span style={{
               background: 'linear-gradient(135deg, #ff80bf, #b388ff)',
               color: 'white',
@@ -162,7 +162,7 @@ export default function ReviewCard({ review, onToggleFavorite, onDelete, onEdit 
               🏆 Banger Shake
             </span>
           )}
-          {review.rating === 1 && (
+          {review.rating <=1 && (
             <span style={{
               background: '#f3e8ff',
               color: '#7a4a66',

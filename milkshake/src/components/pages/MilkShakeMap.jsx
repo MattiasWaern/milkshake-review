@@ -42,6 +42,8 @@ export default function MilkshakeMap({ onBack, reviews }) {
                     );
                     let data = await response.json();
 
+                    {/* FALLBACK SÖKNING */}
+
                     if (!data || data.length === 0) {
                         const locationOnly = placeString.split(',')[1]?.trim();
                         if (locationOnly) {

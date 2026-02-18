@@ -102,12 +102,12 @@ useEffect(() => {
     }
   };
 
-const handleEdit = (review) => {
-  setFormData(review);
-  SetEditingId(review.id);
-  setShowForm(true);
-  window.scrollTo({top: 0, behavior: 'smooth'});
-};
+  const handleEdit = (review) => {
+    setFormData(review);
+    SetEditingId(review.id);
+    setShowForm(true);
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  };
 
   return (
     <div className="main-layout">
@@ -197,13 +197,42 @@ const handleEdit = (review) => {
                 DRA FÖR ATT SÄTTA DITT BETYG :D
               </p>
 
+            {/* STJÄRNOR STYLING */} 
 
                 <Rating
                   value={formData.rating}
                   precision={0.5}
                   readOnly
                   size="large"
-                  sx={{ fontSize: '3rem', marginBottom: '10px' }}
+                  sx={{
+                    fontSize: '3rem',
+                    marginBottom: '12px',
+
+                    color: 'var(--pink-500)',
+
+                    '& .MuiRating-iconFilled': {
+                      background: 'linear-gradient(135deg, var(--pink-400), var(--lilac-500))',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      filter: 'drop-shadow(1px 1px 0 var(--pink-200))',
+                      transition: 'transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                    },
+
+                    '& .MuiRating-iconHover': {
+                      transform: 'scale(1.15) rotate(-3deg)',
+                    },
+
+                    '& .MuiRating-iconEmpty': {
+                      color: 'var(--pink-200)',
+                      opacity: 0.6,
+                    },
+
+                    '& .MuiRating-iconHalf': {
+                      background: 'linear-gradient(135deg, var(--pink-300), var(--lilac-400))',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    },
+                  }}
                 />
 
                 <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#9333ea', marginBottom: '10px' }}>
@@ -211,6 +240,9 @@ const handleEdit = (review) => {
                 </div>
 
                 <div style={{ padding: '0 20px' }}>
+
+                   {/* SLIDER STYLING */} 
+
                   <Slider
                     value={formData.rating}
                     min={0.5}
@@ -218,19 +250,34 @@ const handleEdit = (review) => {
                     step={0.5}
                     onChange={(e, newValue) => setFormData({...formData, rating: newValue})}
                     sx={{
-                      color: '#9333ea',
-                      '& .MuiSlider-thumb': {
-                        height: 30,
-                        width: 30,
-                        backgroundColor: '#fff',
-                        border: '3px solid currentColor',
-                        '&:focus, &:hover, &.Mui-active': {
-                          boxShadow: 'inherit',
-                        },
+                      color: 'transparent',
+                      '& .MuiSlider-track': {
+                        border: 'none',
+                        background: 'linear-gradient(90deg, #ffadd6, #ff4da6, #b388ff)',
+                        height: 12,
+                        borderRadius: 999,
+                        boxShadow: '0 2px 4px rgba(255, 100, 180, 0.2)',
                       },
                       '& .MuiSlider-rail': {
-                        opacity: 0.5,
-                        backgroundColor: '#bfdbfe',
+                        background: '#ffe0f0',
+                        opacity: 1,
+                        height: 12,
+                        borderRadius: 999,
+                        border: '2px solid #ffadd6',
+                      },
+                      '& .MuiSlider-thumb': {
+                        height: 34,
+                        width: 34,
+                        backgroundColor: 'white',
+                        border: '4px solid #ff80bf',
+                        borderRadius: '50%',
+                        boxShadow: '4px 4px 0 #ffadd6',
+                        transition: 'all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                        '&:hover, &.Mui-active': {
+                          boxShadow: '6px 6px 0 #ff99cc',
+                          transform: 'scale(1.1) rotate(5deg)',
+                          borderColor: '#b388ff',
+                        },
                       },
                     }}
                   />
