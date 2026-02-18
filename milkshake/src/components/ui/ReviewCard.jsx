@@ -1,7 +1,8 @@
 import React from 'react';
-import { Star, Heart, Pencil, MapPin, Calendar, User, X } from 'lucide-react';
+import { Heart, Pencil, MapPin, Calendar, User, X } from 'lucide-react';
 import Badge from './Badge';
 import { Link } from 'react-router-dom';
+import Rating from '@mui/material/Rating'; 
 
 export default function ReviewCard({ review, onToggleFavorite, onDelete, onEdit }) {
   return (

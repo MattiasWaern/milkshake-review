@@ -6,6 +6,7 @@ import ReviewCard from './components/ui/ReviewCard';
 import StatsView from './components/pages/StatsView';
 import MilkshakeMap  from './components/pages/MilkShakeMap';
 import Rating from '@mui/material/Rating';
+import Slider from '@mui/material/Slider';
 import ReviewDetail from './components/ui/ReviewDetail';
 import {db} from './firebase';
 import {collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc} from 'firebase/firestore';
@@ -184,16 +185,57 @@ const handleEdit = (review) => {
                     ))}
                   </div>
                 </div>
+            <div style={{ 
+              marginBottom: '1.5rem', 
+              textAlign: 'center', 
+              background: '#fdf2f8', 
+              padding: '20px', 
+              borderRadius: '16px',
+              border: '1px solid #fbcfe8'
+            }}>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-dark)', marginBottom: '15px', fontWeight: 'bold' }}>
+                DRAG FÖR ATT SÄTTA BETYG :D
+              </p>
 
-                <div style={{ marginBottom: '1.5rem', textAlign: 'center', background: '#fdf2f8', padding: '15px', borderRadius: '12px' }}>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--gray-600)', marginBottom: '8px', fontWeight: 'bold' }}>Betyg</p>
-                  <Rating
-                    name="milkshake-rating"
+
+                <Rating
+                  value={formData.rating}
+                  precision={0.5}
+                  readOnly
+                  size="large"
+                  sx={{ fontSize: '3rem', marginBottom: '10px' }}
+                />
+
+                <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#9333ea', marginBottom: '10px' }}>
+                  {formData.rating.toFixed(1)}
+                </div>
+
+                <div style={{ padding: '0 20px' }}>
+                  <Slider
                     value={formData.rating}
-                    size="large"
-                    onChange={(event, newValue) => setFormData({...formData, rating: newValue})}
+                    min={0.5}
+                    max={5}
+                    step={0.5}
+                    onChange={(e, newValue) => setFormData({...formData, rating: newValue})}
+                    sx={{
+                      color: '#9333ea',
+                      '& .MuiSlider-thumb': {
+                        height: 30,
+                        width: 30,
+                        backgroundColor: '#fff',
+                        border: '3px solid currentColor',
+                        '&:focus, &:hover, &.Mui-active': {
+                          boxShadow: 'inherit',
+                        },
+                      },
+                      '& .MuiSlider-rail': {
+                        opacity: 0.5,
+                        backgroundColor: '#bfdbfe',
+                      },
+                    }}
                   />
                 </div>
+            </div>
 
                 <div className="input-row">
                   <input 

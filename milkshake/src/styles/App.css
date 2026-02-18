@@ -376,7 +376,6 @@ input[type="number"]::-webkit-inner-spin-button {
   padding: 12px 0 4px;
 }
 
-
 .review-card {
   background: white;
   border-radius: var(--radius-card);
