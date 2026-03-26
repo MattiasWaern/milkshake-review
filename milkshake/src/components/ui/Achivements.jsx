@@ -4,7 +4,7 @@ export const ACHIEVEMENTS = [
     {
         id: "first_review",
         label: "Första slurpen",
-        icon: "🥛",
+        icon: "🍦",
         check: (reviews) => reviews.length >= 1,
     },
     {
@@ -30,6 +30,12 @@ export const ACHIEVEMENTS = [
         label: "Hård kritiker",
         icon: "😤",
         check: (reviews) => reviews.filter((r) => r.rating < 2).length >= 3,
+    },
+     {
+        id: "karen",
+        label: "Karen",
+        icon: "👵",
+        check: (reviews) => reviews.filter((r) => r.rating < 1),
     },
      {
         id: "loyal",
