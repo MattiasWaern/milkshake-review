@@ -37,7 +37,7 @@ export const ACHIEVEMENTS = [
         icon: "📍",
         check: (reviews) => 
             Object.values(
-                reviews.reduce((arr, r) => {
+                reviews.reduce((acc, r) => {
                     acc[r.palce] = (acc[r.place] || 0) + 1;
                     return acc;
                 }, {})

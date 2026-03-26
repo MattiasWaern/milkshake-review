@@ -401,6 +401,167 @@ input[type="number"]::-webkit-inner-spin-button {
   border-color: var(--pink-300);
 }
 
+/*  Profiles Page  */
+.profiles-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.profiles-title {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.profiles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 2rem;
+}
+
+/*  Profilkort  */
+.profile-card {
+  background: var(--card-bg, #fff);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--primary-color, #e91e8c);
+  color: white;
+  font-size: 1.6rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.profile-name {
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.profile-subtitle {
+  margin: 0;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.profile-subtitle-money {
+  margin: 0;
+  color: #49ad67;
+  font-size: 0.9rem;
+}
+
+/*  Statistik  */
+.profile-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.stat-box {
+  flex: 1;
+  background: var(--bg-secondary, #f8f8f8);
+  border-radius: 10px;
+  padding: 0.75rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: var(--primary-color, #e91e8c);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+/*  Favoritshake  */
+.profile-favorite {
+  background: var(--bg-secondary, #f8f8f8);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.favorite-label {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.favorite-link {
+  font-weight: 600;
+  color: var(--primary-color, #e91e8c);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.favorite-link:hover {
+  text-decoration: underline;
+}
+
+/*  Achievements  */
+.achievements-title {
+  font-size: 1rem;
+  margin: 0 0 0.75rem 0;
+}
+
+.achievements-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.achievement-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary-color, #e91e8c);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.achievement-badge.locked {
+  background: #e0e0e0;
+  color: #999;
+}
+
+.achievements-grid.locked {
+  margin-top: 0.5rem;
+}
+
+.no-achievements {
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+
+
 /* SCROLLBAR */
 
 ::-webkit-scrollbar { width: 8px; }

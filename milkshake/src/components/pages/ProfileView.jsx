@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import{collection, getDocs} from "firsebase/firestore";
-import {db} from "../../firebase";
+import{collection, getDocs} from "firebase/firestore";
+import { db } from "../../firebase"; 
 import {Link} from "react-router-dom";
 import Achivements from "../ui/Achivements";
 
@@ -11,8 +11,8 @@ function getStats(reviews){
     if (reviews.length === 0) return {avg: 0, best: null, count: 0};
     const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
     const best = reviews.reduce((a, b) => (a.rating >= b.rating ? a: b));
-    return {avg: avg.toFixed(1), best, count: reviews.length};
-}
+    const totalSpent = reviews.reduce((sum, r) => sum + (Number(r.price) || 0), 0);
+return { avg: avg.toFixed(1), best, count: reviews.length, totalSpent };}
 
 function groupByUser(reviews){
     return reviews.reduce((acc, review) => {
@@ -26,8 +26,7 @@ function groupByUser(reviews){
 //ProfilKort
 
 function ProfileCard({name, reviews}) {
-    const stats = getStats(review);
-    const Achivements = getAchivements(reviews);
+    const stats = getStats(reviews);
 
     const renderStars = (rating) => "⭐".repeat(Math.round(rating));
 
@@ -40,6 +39,7 @@ function ProfileCard({name, reviews}) {
         <div>
           <h2 className="profile-name">{name}</h2>
           <p className="profile-subtitle">{stats.count} recensioner</p>
+          <p className="profile-subtitle">{stats.totalSpent} kr spenderat</p>
         </div>
       </div>
 
@@ -69,6 +69,8 @@ function ProfileCard({name, reviews}) {
             {renderStars(stats.best.rating)}
             </Link>
         </div>
+
+        <Achivements reviews={reviews}></Achivements>
     </div>
     );
 }
@@ -91,4 +93,15 @@ export default function ProfilesView(){
     }, []);
 
     if (loading) return <p className="loading">Laddar profiler... 🥤</p>
+
+    return (
+    <div className="profiles-page">
+      <h1 className="profiles-title">👤 Recensenter</h1>
+      <div className="profiles-grid">
+        {Object.entries(grouped).map(([name, reviews]) => (
+          <ProfileCard key={name} name={name} reviews={reviews} />
+        ))}
+      </div>
+    </div>
+  );
 }

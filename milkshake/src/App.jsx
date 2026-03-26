@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, X, Trophy, Download, ChevronRight, ChevronDown, MapPin, Star } from 'lucide-react';
+import { Plus, X, Trophy, Download, ChevronRight, ChevronDown, MapPin, Star, UserRound } from 'lucide-react';
 import { HashRouter, Routes, Route, Link, useParams } from 'react-router-dom';
 import './styles/App.css';
 import ReviewCard from './components/ui/ReviewCard';
@@ -8,6 +8,7 @@ import MilkshakeMap  from './components/pages/MilkShakeMap';
 import Rating from '@mui/material/Rating';
 import Slider from '@mui/material/Slider';
 import ReviewDetail from './components/ui/ReviewDetail';
+import ProfilesView from './components/pages/ProfileView';
 import {db} from './firebase';
 import {collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc} from 'firebase/firestore';
 
@@ -157,6 +158,10 @@ const toggleFavorite = (id) => {
 
               <Link to="/map" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }}>
                 <MapPin size={24} style={{ marginRight: '8px' }}/> Karta
+              </Link>
+
+               <Link to="/profiles" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none', }}>
+                <UserRound size={24} style={{ marginRight: '8px' }}/> Profiler
               </Link>
             </div>
 
@@ -364,6 +369,7 @@ const toggleFavorite = (id) => {
         <Route path="/stats" element={<StatsView reviews={reviews} localFavorites={localFavorites} onBack={() => window.history.back()} />} />
         <Route path="/map" element={<MilkshakeMap reviews={reviews} onBack={() => window.history.back()} />} />
         <Route path="/review/:id" element={<ReviewDetail reviews={reviews} />} />
+        <Route path="/profiles" element={<ProfilesView/>} />
 
 
       </Routes>
